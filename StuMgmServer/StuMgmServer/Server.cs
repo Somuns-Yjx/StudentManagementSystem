@@ -13,19 +13,26 @@ namespace StuMgmServer
     {
         TcpConn tcpConn = new TcpConn();
         Thread tAccept = null;
+        private delegate void SetTextCallback(string text);
 
-        private delegate void SetTextCallbakc();
         public Server()
         {
             InitializeComponent();
-            //CheckForIllegalCrossThreadCalls = false;
         }
-
-        //具体要调用的方面 
-        private void callbakc()
+        /// <summary>
+        ///  委托更新界面
+        /// </summary>
+        private void setText(string text)
         {
-            richTextBox1.Text += tcpConn.acceptConnection() + "  Connected \n";
-            richTextBox1.Text += tcpConn.acpMsg() + "  Disconnected \n";
+            if (richTextBox1.InvokeRequired)
+            {
+                SetTextCallback method = new SetTextCallback(setText);
+                Invoke(method, new object[] { text });
+            }
+            else
+            {
+                richTextBox1.Text += text;
+            }
         }
 
         private void btnSerSwitch_Click(object sender, EventArgs e)
@@ -37,12 +44,10 @@ namespace StuMgmServer
                     tcpConn.CloseServer();
                 else if (sFlag != true)
                 {
-                    tcpConn.OpenServer(Convert.ToInt16(txtPort.Text));
-
-                    //test();
-                    tAccept = new Thread(newTest);
+                    int port = Convert.ToInt16(txtPort.Text);
+                    tcpConn.OpenServer(port);
+                    tAccept = new Thread(updateHistory);
                     tAccept.Start();
-
                 }
             }
             catch (Exception ep)
@@ -50,16 +55,23 @@ namespace StuMgmServer
                 MessageBox.Show(ep.Message);
             }
         }
-        private void newTest()
+
+        private void updateHistory()
         {
-            SetTextCallbakc stcb = new SetTextCallbakc(callbakc);
-            while (true)
+            while (tcpConn.SocketExist)
             {
-                Invoke(stcb);
-                //callbakc();
+                setText(tcpConn.acceptConnection());
+                setText(tcpConn.acpMsg());
             }
         }
 
+        private void tmr_Tick(object sender, EventArgs e)
+        {
+            if (tcpConn.SocketExist)
+                btnSerSwitch.Text = "关闭服务器";
+            else
+                btnSerSwitch.Text = "打开服务器";
+        }
 
 
 

@@ -56,12 +56,12 @@ namespace StuMgmServer
         #endregion
 
         #region 接收客户端连接
-        public EndPoint acceptConnection()
+        public string acceptConnection()
         {
             try
             {
                 socketClient = socket.Accept();         // 阻塞等待客户端连接
-                return socketClient.RemoteEndPoint;
+                return socketClient.RemoteEndPoint.ToString() + "  已连接 \n";
             }
             catch (Exception)
             {
@@ -70,20 +70,26 @@ namespace StuMgmServer
         }
         #endregion
 
+        const int recvTimeOut = 3000;                                   // 设置接收超时时间
         #region 接收数据
         public string acpMsg()
         {
             byte[] arrDataRecv = new byte[1024];                    // 定义接收数组
-            string reEdPoint = socketClient.RemoteEndPoint.ToString();
+            string reEdPoint = "";
             try
             {
+                reEdPoint = socketClient.RemoteEndPoint.ToString();
+                socketClient.ReceiveTimeout = recvTimeOut;
                 int len = socketClient.Receive(arrDataRecv);
                 List<byte> listDataRecv = new List<byte> { };      // 定义截取列表
-                return reEdPoint + " " + len.ToString();
+                return reEdPoint + " " + len.ToString() + "  断开连接 \n";
             }
             catch                                // 客户端断开连接
             {
-                return reEdPoint;
+                if (socketClient != null)
+                    return reEdPoint + "  断开连接 \n";
+                else
+                    return null;
             }
             finally
             {
