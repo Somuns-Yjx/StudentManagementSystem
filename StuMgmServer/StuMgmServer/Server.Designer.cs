@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.tlpAll = new System.Windows.Forms.TableLayoutPanel();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.txtPort = new System.Windows.Forms.TextBox();
             this.lblSwiSta = new System.Windows.Forms.Label();
@@ -37,7 +38,6 @@
             this.lblPort = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.tmr = new System.Windows.Forms.Timer(this.components);
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.tlpAll.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
@@ -54,9 +54,19 @@
             this.tlpAll.Name = "tlpAll";
             this.tlpAll.RowCount = 1;
             this.tlpAll.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpAll.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpAll.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 413F));
             this.tlpAll.Size = new System.Drawing.Size(1075, 413);
             this.tlpAll.TabIndex = 0;
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBox1.Font = new System.Drawing.Font("Calibri", 10.8F);
+            this.richTextBox1.Location = new System.Drawing.Point(295, 3);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(777, 407);
+            this.richTextBox1.TabIndex = 2;
+            this.richTextBox1.Text = "";
             // 
             // tableLayoutPanel1
             // 
@@ -80,9 +90,9 @@
             // 
             this.txtPort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPort.Font = new System.Drawing.Font("Calibri", 10.8F);
-            this.txtPort.Location = new System.Drawing.Point(133, 10);
+            this.txtPort.Location = new System.Drawing.Point(134, 10);
             this.txtPort.Name = "txtPort";
-            this.txtPort.Size = new System.Drawing.Size(150, 29);
+            this.txtPort.Size = new System.Drawing.Size(149, 29);
             this.txtPort.TabIndex = 3;
             this.txtPort.Text = "502";
             this.txtPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -102,9 +112,9 @@
             // 
             this.btnSerSwitch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnSerSwitch.Font = new System.Drawing.Font("Calibri", 10.8F);
-            this.btnSerSwitch.Location = new System.Drawing.Point(133, 53);
+            this.btnSerSwitch.Location = new System.Drawing.Point(134, 53);
             this.btnSerSwitch.Name = "btnSerSwitch";
-            this.btnSerSwitch.Size = new System.Drawing.Size(150, 44);
+            this.btnSerSwitch.Size = new System.Drawing.Size(149, 44);
             this.btnSerSwitch.TabIndex = 2;
             this.btnSerSwitch.Text = "开启服务器";
             this.btnSerSwitch.UseVisualStyleBackColor = true;
@@ -133,18 +143,8 @@
             // tmr
             // 
             this.tmr.Enabled = true;
-            this.tmr.Interval = 1000;
+            this.tmr.Interval = 500;
             this.tmr.Tick += new System.EventHandler(this.tmr_Tick);
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Font = new System.Drawing.Font("Calibri", 10.8F);
-            this.richTextBox1.Location = new System.Drawing.Point(295, 3);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(777, 407);
-            this.richTextBox1.TabIndex = 2;
-            this.richTextBox1.Text = "";
             // 
             // Server
             // 
@@ -156,6 +156,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Server";
             this.Text = "Server";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Server_FormClosed);
             this.tlpAll.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();

@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
-using System.Windows.Forms;
 
-namespace StuMgmServer
+namespace StuMgmLib.MyNameSpace
 {
-    class TcpConn
+    public class TcpConn
     {
         private IPEndPoint IPP = null;
         private Socket socket = null;

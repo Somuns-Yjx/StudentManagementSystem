@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using StuMgmLib.MyNameSpace;
 
 namespace StuMgmServer
 {
@@ -18,6 +14,10 @@ namespace StuMgmServer
         public Server()
         {
             InitializeComponent();
+        }
+        private void Server_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            System.Environment.Exit(0);
         }
         /// <summary>
         ///  委托更新界面
@@ -34,6 +34,7 @@ namespace StuMgmServer
                 richTextBox1.Text += text;
             }
         }
+
 
         private void btnSerSwitch_Click(object sender, EventArgs e)
         {
@@ -70,8 +71,10 @@ namespace StuMgmServer
             if (tcpConn.SocketExist)
                 btnSerSwitch.Text = "关闭服务器";
             else
-                btnSerSwitch.Text = "打开服务器";
+                btnSerSwitch.Text = "开启服务器";
         }
+
+
 
 
 
