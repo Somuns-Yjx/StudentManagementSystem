@@ -5,21 +5,12 @@ using System.Net.Sockets;
 
 namespace StuMgmLib.MyNameSpace
 {
+    
     public class TcpConn
     {
         private IPEndPoint IPP = null;
         private Socket socket = null;
         private Socket socketClient = null;
-        //private Thread tAccept = null;
-
-        #region 连接状态字段
-        private bool my_connect = false;
-        public bool Connect
-        {
-            get { return my_connect; }
-            set { my_connect = value; }
-        }
-        #endregion
 
         private bool my_SocketExist = false;
         /// <summary>
@@ -72,13 +63,14 @@ namespace StuMgmLib.MyNameSpace
         #region 接收数据
         public string acpMsg()
         {
-            byte[] arrDataRecv = new byte[1024];                    // 定义接收数组
+            byte[] arrDataRecv = new byte[4096];                    // 定义接收数组
             string reEdPoint = "";
             try
             {
                 reEdPoint = socketClient.RemoteEndPoint.ToString();
                 socketClient.ReceiveTimeout = recvTimeOut;
                 int len = socketClient.Receive(arrDataRecv);
+                DataAnalyze.GetFunc(arrDataRecv);                       // 解析
                 List<byte> listDataRecv = new List<byte> { };      // 定义截取列表
                 return reEdPoint + " " + len.ToString() + "  断开连接 \n";
             }

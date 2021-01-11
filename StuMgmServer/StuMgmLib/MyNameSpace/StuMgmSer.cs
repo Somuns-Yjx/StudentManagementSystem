@@ -10,6 +10,7 @@ namespace StuMgmLib
 {
 
     #region 题目信息
+    [Serializable]
     public class CourseInfo
     {
         public short Id;
@@ -21,7 +22,6 @@ namespace StuMgmLib
     #endregion
 
     #region 学生题目信息一览
-    [Serializable]
     public enum CourseStatusEnum
     {
         undo,                  // 未开始
@@ -31,6 +31,7 @@ namespace StuMgmLib
         preSharing,       // 准备分享
         pass                     // 验收通过
     }
+
     [Serializable]
     public class CourseStatus
     {
@@ -64,9 +65,9 @@ namespace StuMgmLib
 
     class Server
     {
-        List<CourseInfo> GetCourseInfo();
-        UserInfo GetUserInfo(short jobId);
-        DetailInfo GetDetailInfo(short jobId, short courseId);
+        //List<CourseInfo> GetCourseInfo();
+        //UserInfo GetUserInfo(short jobId);
+        //DetailInfo GetDetailInfo(short jobId, short courseId);
 
         public byte[] GetUser(short jobId)
         {
@@ -88,7 +89,7 @@ namespace StuMgmLib
             return buff;
         }
 
-        public UserInfo Prase(byte[] bt)
+        public UserInfo Parse(byte[] bt)
         {
             MemoryStream ms = new MemoryStream(bt);
             BinaryFormatter iFormatter = new BinaryFormatter();
@@ -107,11 +108,11 @@ namespace StuMgmLib
 
     class Program
     {
-        static void Main(string[] args)
-        {
-            Server s = new Server();
-            byte[] buf = s.GetUser(0);
-            UserInfo aa = s.Prase(buf);
-        }
+        //static void Main(string[] args)
+        //{
+        //    Server s = new Server();
+        //    byte[] buf = s.GetUser(0);
+        //    UserInfo aa = s.Parse(buf);
+        //}
     }
 }

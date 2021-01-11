@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.tlpAll = new System.Windows.Forms.TableLayoutPanel();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.rtxHistory = new System.Windows.Forms.RichTextBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.txtPort = new System.Windows.Forms.TextBox();
             this.lblSwiSta = new System.Windows.Forms.Label();
@@ -47,7 +47,7 @@
             this.tlpAll.ColumnCount = 2;
             this.tlpAll.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.25581F));
             this.tlpAll.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 72.74419F));
-            this.tlpAll.Controls.Add(this.richTextBox1, 0, 0);
+            this.tlpAll.Controls.Add(this.rtxHistory, 0, 0);
             this.tlpAll.Controls.Add(this.tableLayoutPanel1, 0, 0);
             this.tlpAll.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpAll.Location = new System.Drawing.Point(0, 24);
@@ -58,15 +58,15 @@
             this.tlpAll.Size = new System.Drawing.Size(1075, 413);
             this.tlpAll.TabIndex = 0;
             // 
-            // richTextBox1
+            // rtxHistory
             // 
-            this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.richTextBox1.Font = new System.Drawing.Font("Calibri", 10.8F);
-            this.richTextBox1.Location = new System.Drawing.Point(295, 3);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(777, 407);
-            this.richTextBox1.TabIndex = 2;
-            this.richTextBox1.Text = "";
+            this.rtxHistory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtxHistory.Font = new System.Drawing.Font("Calibri", 10.8F);
+            this.rtxHistory.Location = new System.Drawing.Point(295, 3);
+            this.rtxHistory.Name = "rtxHistory";
+            this.rtxHistory.Size = new System.Drawing.Size(777, 407);
+            this.rtxHistory.TabIndex = 2;
+            this.rtxHistory.Text = "";
             // 
             // tableLayoutPanel1
             // 
@@ -175,7 +175,7 @@
         private System.Windows.Forms.Label lblPort;
         private System.Windows.Forms.TextBox txtPort;
         private System.Windows.Forms.Timer tmr;
-        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.RichTextBox rtxHistory;
     }
 }
 

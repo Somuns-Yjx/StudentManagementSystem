@@ -24,14 +24,14 @@ namespace StuMgmServer
         /// </summary>
         private void setText(string text)
         {
-            if (richTextBox1.InvokeRequired)
+            if (rtxHistory.InvokeRequired)
             {
                 SetTextCallback method = new SetTextCallback(setText);
                 Invoke(method, new object[] { text });
             }
             else
             {
-                richTextBox1.Text += text;
+                rtxHistory.Text = text + rtxHistory.Text;
             }
         }
 
