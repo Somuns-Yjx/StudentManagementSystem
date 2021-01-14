@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Net;
 using System.Net.Sockets;
 
 namespace StuMgmLib.MyNameSpace
 {
-    
+    // 还有一种验证连接方式 Token
     public class TcpConn
     {
         private IPEndPoint IPP = null;
@@ -45,6 +46,9 @@ namespace StuMgmLib.MyNameSpace
         #endregion
 
         #region 接收客户端连接
+        /// <summary>
+        /// 接收客户端连接
+        /// </summary>
         public string acceptConnection()
         {
             try
@@ -61,18 +65,25 @@ namespace StuMgmLib.MyNameSpace
 
         const int recvTimeOut = 3000;                                   // 设置接收超时时间
         #region 接收数据
+        /// <summary>
+        ///  接收数据
+        /// </summary>
         public string acpMsg()
         {
-            byte[] arrDataRecv = new byte[4096];                    // 定义接收数组
+            byte[] dataRecv = new byte[4096];                    // 定义接收数组
             string reEdPoint = "";
             try
             {
                 reEdPoint = socketClient.RemoteEndPoint.ToString();
                 socketClient.ReceiveTimeout = recvTimeOut;
-                int len = socketClient.Receive(arrDataRecv);
-                DataAnalyze.GetFunc(arrDataRecv);                       // 解析
-                List<byte> listDataRecv = new List<byte> { };      // 定义截取列表
-                return reEdPoint + " " + len.ToString() + "  断开连接 \n";
+                socketClient.Receive(dataRecv);
+
+                var cs = BinaryED.Deserialize<Info.ClientSend>(dataRecv);
+                Info.ServerSend ss = DataAnalyze.ClientSendAnalyze(cs);
+                byte[] dataSend = BinaryED.Serialize<Info.ServerSend>(ss);
+                socketClient.Send(dataSend);
+
+                return reEdPoint + "  断开连接 \n";
             }
             catch                                // 客户端断开连接
             {

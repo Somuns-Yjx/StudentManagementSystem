@@ -1,13 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-//using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-//using System.Threading.Tasks;
+using System.Data;
 
-namespace StuMgmLib
+namespace StuMgmLib.MyNameSpace
 {
+    public class Info
+    {
+        [Serializable]
+        public class ClientSend
+        {
+            public short account { get; set; }
+            public string password { get; set; }
+            public string sqlStr { get; set; }
+        }
+        [Serializable]
+        public class ServerSend
+        {
+            public short permission { get; set; }
+            public DataSet ds { get; set; }
+        }
+    }
+
 
     #region 题目信息
     [Serializable]
@@ -48,17 +61,17 @@ namespace StuMgmLib
     #endregion
 
     #region 学生单题详细信息
-    public class HistoryInfo
-    {
-        DateTime Time;
-        string Describe;
-    }
-    public class DetailInfo
-    {
-        public short CourseId;
-        public short JobId;
-        List<HistoryInfo> Describes;
-    }
+    //public class HistoryInfo
+    //{
+    //    DateTime Time;
+    //    string Describe;
+    //}
+    //public class DetailInfo
+    //{
+    //    public short CourseId;
+    //    public short JobId;
+    //    List<HistoryInfo> Describes;
+    //}
     #endregion
 
 
@@ -81,21 +94,21 @@ namespace StuMgmLib
             info.CourseStatus.Add(aa);
 
 
+            return BinaryED.Serialize(info);
 
-            MemoryStream ms = new MemoryStream();
-            BinaryFormatter iFormatter = new BinaryFormatter();
-            iFormatter.Serialize(ms, info);
-            byte[] buff = ms.GetBuffer();
-            return buff;
         }
 
         public UserInfo Parse(byte[] bt)
         {
-            MemoryStream ms = new MemoryStream(bt);
-            BinaryFormatter iFormatter = new BinaryFormatter();
-            UserInfo obj = (UserInfo)iFormatter.Deserialize(ms);
-            return obj;
+            return BinaryED.Deserialize<UserInfo>(bt);
+            //MemoryStream ms = new MemoryStream(bt);
+            //BinaryFormatter iFormatter = new BinaryFormatter();
+            //UserInfo obj = (UserInfo)iFormatter.Deserialize(ms);
+            //return obj;
         }
+
+
+
     }
 
     class StudentInfo

@@ -3,15 +3,15 @@ using System.Threading;
 using System.Windows.Forms;
 using StuMgmLib.MyNameSpace;
 
-namespace StuMgmServer
+namespace Test
 {
-    public partial class Server : Form
+    public partial class Form1 : Form
     {
         TcpConn tcpConn = new TcpConn();
         Thread tUpdateUi = null;
         private delegate void SetTextCallback(string text);
 
-        public Server()
+        public Form1()
         {
             InitializeComponent();
         }

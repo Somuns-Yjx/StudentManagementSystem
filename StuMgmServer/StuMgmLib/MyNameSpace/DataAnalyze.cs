@@ -7,30 +7,77 @@ using System.Windows.Forms;
 
 namespace StuMgmLib.MyNameSpace
 {
+    /// <summary>
+    /// 数据操作
+    /// </summary>
     public class DataAnalyze
     {
-        const string conStr = "data source=localhost; initial catalog=xinje; user id=root; pwd=980505";
-
-        public static void GetFunc(byte[] dataRecv)
+       
+        private enum verifyCode : short
         {
-            short account = 01941;
-            string psw = "980505";
-            bool res = LoginVerify(account, psw);
-            res = !res;
+            error = -1,
+            notFound = -2,
+            admin = 1,
+            teacher = 2,
+            student = 3,
+        }
+        private const string conStr = "data source=localhost; initial catalog=xinje; user id=root; pwd=980505;charset = utf8";
 
+        /*  Recv:    ___________________________________________________________________
+         *                |     Account  |  Password  |   (SqlOperate)                                                                                          |
+         *                |___short_____string______string________________________________________|
+         * Analyze:
+         *                  Account    Permission  (SqlOperate)
+         *                  
+         * Send:     ____________________________________________________________________
+         *                |  Permission    |    DataSet                                                                                                                                                        |
+         *                |___short________DS_______________________________________________________________|
+        */
 
-            // 对buf数据处理，判断身份验证还是数据库操作
-            //switch ()
-            //{
-            //    case :break;
-            //    case :break;
-            //    case :break;
-            //    default:break;
-            //}
+        /// <summary>
+        /// 解析ClientSend
+        /// </summary>
+        public static Info.ServerSend ClientSendAnalyze(Info.ClientSend cs)
+        {
+            Info.ServerSend ss = new Info.ServerSend();
+            ss.permission = LoginVerify(cs.account, cs.password);   // 验证身份
+            if (ss.permission < 0) // 小于0，则权限有误
+            {
+                ss.ds = null;
+                return ss;
+            }
+            // if(operationCode != 0)
+            // 写数据表操作
+            // To do sth here ........
+            string[] tbName;
+            bool stuFlag = false;
+            switch (ss.permission)
+            {
+                case (short)verifyCode.admin:
+                    tbName = new string[] { "user_info", "course_info", "user" };
+                    break;
+                case (short)verifyCode.teacher:
+                    tbName = new string[] { "user_info", "course_info" };
+                    break;
+                case (short)verifyCode.student:
+                    tbName = new string[] { "user_info", "course_info" };
+                    stuFlag = true; break;
+                default:
+                    tbName = null;
+                    break;
+            }
+            ss.ds = getDataSet(tbName, stuFlag, cs.account);
+            return ss;
         }
 
-        public static bool LoginVerify(short account, string psw)
+
+        /// <summary>
+        ///  登录验证，若失败，则返回错误码；若身份验证成功，则返回用户权限；
+        /// </summary>
+        private static short LoginVerify(short account, string psw)
         {
+            short notFound = -1;
+            short error = -2;
             string qStu = "select * from user where account = " + account + " and password = '" + psw + "'";
             MySqlConnection con = new MySqlConnection(conStr);
             try
@@ -39,17 +86,17 @@ namespace StuMgmLib.MyNameSpace
                 MySqlCommand mCmd = new MySqlCommand(qStu, con);
                 MySqlDataReader mReader = mCmd.ExecuteReader();
                 if (mReader.HasRows)
-                    return true;
+                {
+                    mReader.Read();
+                    return mReader.GetInt16("permission");
+                }
                 else
-                    return false;
-                //DataTable dt = new DataTable();
-                //dt.Load(mReader);
-                //Random r = new Random();
+                    return notFound;
             }
             catch (MySqlException mySqlEx)
             {
                 MessageBox.Show(mySqlEx.Message);
-                return false;
+                return error;
             }
             finally
             {
@@ -57,32 +104,40 @@ namespace StuMgmLib.MyNameSpace
             }
         }
 
-        private static DataTable mysqlUse()
+        /// <summary>
+        ///  改
+        /// </summary>
+        private static void mySqlModify()
         {
-            // mysql Query
-            string key = "";
-            string para = "";
-            string qStu = "select * from staffs where ";            // 验证登录信息
-            switch (key)
-            {
-                case "Id":
-                    qStu += " Id =" + Convert.ToString(para);
-                    break;
-                case "All":
-                    qStu = "select * from staffs "; break;
-                default:
-                    qStu += key + "= '" + Convert.ToString(para) + "'";
-                    break;
-            }
+
+        }
+
+        /// <summary>
+        ///  查  将各表填入dataset
+        /// </summary>
+        private static DataSet getDataSet(string[] tbName, bool stuFlag, int account)
+        {
+            string str = "select * from ";
             MySqlConnection con = new MySqlConnection(conStr);
             try
             {
                 con.Open();
-                MySqlCommand mCmd = new MySqlCommand(qStu, con);
-                MySqlDataReader mReader = mCmd.ExecuteReader();
-                DataTable dt = new DataTable();
-                dt.Load(mReader);
-                return dt;
+                DataSet ds = new DataSet();
+                for (int index = 0; index < tbName.Length; index++)
+                {
+                    string newStr = str + tbName[index];
+                    if ((stuFlag == true) && (tbName[index] == "user_info"))
+                    {
+                        newStr += "where job_id = " + account.ToString();
+                    }
+                    MySqlCommand mCmd = new MySqlCommand(newStr, con);
+                    MySqlDataReader mReader = mCmd.ExecuteReader();
+                    DataTable dt = new DataTable();
+                    dt.Load(mReader);
+                    dt.TableName = tbName[index];
+                    ds.Tables.Add(dt);
+                }
+                return ds;
             }
             catch (MySqlException mySqlEx)
             {
@@ -95,5 +150,8 @@ namespace StuMgmLib.MyNameSpace
             }
         }
 
+
+
     }
+
 }
