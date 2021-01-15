@@ -143,7 +143,6 @@
             // tmr
             // 
             this.tmr.Enabled = true;
-            this.tmr.Interval = 500;
             this.tmr.Tick += new System.EventHandler(this.tmr_Tick);
             // 
             // Server

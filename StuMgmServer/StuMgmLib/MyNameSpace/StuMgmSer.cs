@@ -11,7 +11,7 @@ namespace StuMgmLib.MyNameSpace
         {
             public short account { get; set; }
             public string password { get; set; }
-            public string sqlStr { get; set; }
+            public string [] sqlStr { get; set; }
         }
         [Serializable]
         public class ServerSend
@@ -74,7 +74,7 @@ namespace StuMgmLib.MyNameSpace
     //}
     #endregion
 
-
+    #region 未使用
 
     class Server
     {
@@ -128,4 +128,5 @@ namespace StuMgmLib.MyNameSpace
         //    UserInfo aa = s.Parse(buf);
         //}
     }
+    #endregion
 }

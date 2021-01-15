@@ -1,8 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 using System.Windows.Forms;
 
 namespace StuMgmLib.MyNameSpace
@@ -12,7 +9,7 @@ namespace StuMgmLib.MyNameSpace
     /// </summary>
     public class DataAnalyze
     {
-       
+
         private enum verifyCode : short
         {
             error = -1,
@@ -25,7 +22,7 @@ namespace StuMgmLib.MyNameSpace
 
         /*  Recv:    ___________________________________________________________________
          *                |     Account  |  Password  |   (SqlOperate)                                                                                          |
-         *                |___short_____string______string________________________________________|
+         *                |___short_____string______string[]________________________________________|
          * Analyze:
          *                  Account    Permission  (SqlOperate)
          *                  
@@ -40,15 +37,18 @@ namespace StuMgmLib.MyNameSpace
         public static Info.ServerSend ClientSendAnalyze(Info.ClientSend cs)
         {
             Info.ServerSend ss = new Info.ServerSend();
-            ss.permission = LoginVerify(cs.account, cs.password);   // 验证身份
+            ss.permission = loginVerify(cs.account, cs.password);   // 验证身份
             if (ss.permission < 0) // 小于0，则权限有误
             {
                 ss.ds = null;
                 return ss;
             }
-            // if(operationCode != 0)
-            // 写数据表操作
-            // To do sth here ........
+            bool sqlRes = false;
+            if (cs.sqlStr != null)  // sql语句为空，则表示仅登录验证，应
+            {
+                sqlRes = mySqlModify(cs.sqlStr);
+            }
+
             string[] tbName;
             bool stuFlag = false;
             switch (ss.permission)
@@ -74,7 +74,7 @@ namespace StuMgmLib.MyNameSpace
         /// <summary>
         ///  登录验证，若失败，则返回错误码；若身份验证成功，则返回用户权限；
         /// </summary>
-        private static short LoginVerify(short account, string psw)
+        private static short loginVerify(short account, string psw)
         {
             short notFound = -1;
             short error = -2;
@@ -107,9 +107,28 @@ namespace StuMgmLib.MyNameSpace
         /// <summary>
         ///  改
         /// </summary>
-        private static void mySqlModify()
+        private static bool mySqlModify(string[] sqlStr)
         {
-
+            MySqlConnection con = new MySqlConnection(conStr);
+            try
+            {
+                con.Open();
+                int len = sqlStr.Length;
+                for (int index = 0; index < len; index++)
+                {
+                    MySqlCommand mCmd = new MySqlCommand(sqlStr[index], con); // Need to change ......
+                    // To do sth here ......
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                con.Close();
+            }
         }
 
         /// <summary>
@@ -125,7 +144,7 @@ namespace StuMgmLib.MyNameSpace
                 DataSet ds = new DataSet();
                 for (int index = 0; index < tbName.Length; index++)
                 {
-                    string newStr = str + tbName[index];
+                    string newStr = str + " " + tbName[index];
                     if ((stuFlag == true) && (tbName[index] == "user_info"))
                     {
                         newStr += "where job_id = " + account.ToString();

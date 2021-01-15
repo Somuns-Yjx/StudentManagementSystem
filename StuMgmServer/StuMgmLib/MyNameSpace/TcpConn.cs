@@ -26,7 +26,7 @@ namespace StuMgmLib.MyNameSpace
         #region  开启服务器
         public void OpenServer(int port)
         {
-            IPP = new IPEndPoint(IPAddress.Parse("127.0.0.1"), port);
+            IPP = new IPEndPoint(IPAddress.Parse("10.10.0.44"), port);
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socket.Bind(IPP);
             socket.Listen(0);
@@ -49,7 +49,7 @@ namespace StuMgmLib.MyNameSpace
         /// <summary>
         /// 接收客户端连接
         /// </summary>
-        public string acceptConnection()
+        public string AcceptConn()
         {
             try
             {
@@ -64,13 +64,14 @@ namespace StuMgmLib.MyNameSpace
         #endregion
 
         const int recvTimeOut = 3000;                                   // 设置接收超时时间
+        const int recvLength = 65535;
         #region 接收数据
         /// <summary>
         ///  接收数据
         /// </summary>
-        public string acpMsg()
+        public string AcpMsg()
         {
-            byte[] dataRecv = new byte[4096];                    // 定义接收数组
+            byte[] dataRecv = new byte[recvLength];                    // 定义接收数组
             string reEdPoint = "";
             try
             {

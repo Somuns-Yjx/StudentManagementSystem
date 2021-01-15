@@ -3,14 +3,14 @@
     partial class Form1
     {
         /// <summary>
-        /// 必需的设计器变量。
+        /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// 清理所有正在使用的资源。
+        /// Clean up any resources being used.
         /// </summary>
-        /// <param name="disposing">如果应释放托管资源，为 true；否则为 false。</param>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -20,160 +20,137 @@
             base.Dispose(disposing);
         }
 
-        #region Windows 窗体设计器生成的代码
+        #region Windows Form Designer generated code
 
         /// <summary>
-        /// 设计器支持所需的方法 - 不要
-        /// 使用代码编辑器修改此方法的内容。
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.tlpAll = new System.Windows.Forms.TableLayoutPanel();
-            this.rtxHistory = new System.Windows.Forms.RichTextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.dataGridView3 = new System.Windows.Forms.DataGridView();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.txtPort = new System.Windows.Forms.TextBox();
-            this.lblSwiSta = new System.Windows.Forms.Label();
-            this.btnSerSwitch = new System.Windows.Forms.Button();
-            this.lblPort = new System.Windows.Forms.Label();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.tmr = new System.Windows.Forms.Timer(this.components);
-            this.tlpAll.SuspendLayout();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).BeginInit();
             this.tableLayoutPanel1.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tlpAll
+            // button1
             // 
-            this.tlpAll.ColumnCount = 2;
-            this.tlpAll.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 27.25581F));
-            this.tlpAll.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 72.74419F));
-            this.tlpAll.Controls.Add(this.rtxHistory, 0, 0);
-            this.tlpAll.Controls.Add(this.tableLayoutPanel1, 0, 0);
-            this.tlpAll.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpAll.Location = new System.Drawing.Point(0, 24);
-            this.tlpAll.Name = "tlpAll";
-            this.tlpAll.RowCount = 1;
-            this.tlpAll.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpAll.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 425F));
-            this.tlpAll.Size = new System.Drawing.Size(965, 425);
-            this.tlpAll.TabIndex = 2;
+            this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button1.Location = new System.Drawing.Point(557, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(549, 55);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // rtxHistory
+            // button2
             // 
-            this.rtxHistory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.rtxHistory.Font = new System.Drawing.Font("Calibri", 10.8F);
-            this.rtxHistory.Location = new System.Drawing.Point(266, 3);
-            this.rtxHistory.Name = "rtxHistory";
-            this.rtxHistory.Size = new System.Drawing.Size(696, 419);
-            this.rtxHistory.TabIndex = 2;
-            this.rtxHistory.Text = "";
+            this.button2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button2.Location = new System.Drawing.Point(3, 3);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(548, 55);
+            this.button2.TabIndex = 1;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.Location = new System.Drawing.Point(3, 3);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowTemplate.Height = 27;
+            this.dataGridView1.Size = new System.Drawing.Size(1103, 153);
+            this.dataGridView1.TabIndex = 2;
+            // 
+            // dataGridView2
+            // 
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView2.Location = new System.Drawing.Point(3, 321);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.Size = new System.Drawing.Size(1103, 156);
+            this.dataGridView2.TabIndex = 3;
+            // 
+            // dataGridView3
+            // 
+            this.dataGridView3.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView3.Location = new System.Drawing.Point(3, 162);
+            this.dataGridView3.Name = "dataGridView3";
+            this.dataGridView3.Size = new System.Drawing.Size(1103, 153);
+            this.dataGridView3.TabIndex = 4;
             // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45.8042F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 54.1958F));
-            this.tableLayoutPanel1.Controls.Add(this.txtPort, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblSwiSta, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.btnSerSwitch, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.lblPort, 0, 0);
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableLayoutPanel1.Controls.Add(this.button2, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.button1, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 3);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
+            this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(257, 100);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1109, 61);
+            this.tableLayoutPanel1.TabIndex = 5;
             // 
-            // txtPort
+            // tableLayoutPanel2
             // 
-            this.txtPort.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPort.Font = new System.Drawing.Font("Calibri", 10.8F);
-            this.txtPort.Location = new System.Drawing.Point(120, 10);
-            this.txtPort.Name = "txtPort";
-            this.txtPort.Size = new System.Drawing.Size(134, 29);
-            this.txtPort.TabIndex = 3;
-            this.txtPort.Text = "502";
-            this.txtPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // lblSwiSta
-            // 
-            this.lblSwiSta.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lblSwiSta.AutoSize = true;
-            this.lblSwiSta.Font = new System.Drawing.Font("Calibri", 10.8F);
-            this.lblSwiSta.Location = new System.Drawing.Point(3, 63);
-            this.lblSwiSta.Name = "lblSwiSta";
-            this.lblSwiSta.Size = new System.Drawing.Size(110, 23);
-            this.lblSwiSta.TabIndex = 1;
-            this.lblSwiSta.Text = "服务器状态";
-            // 
-            // btnSerSwitch
-            // 
-            this.btnSerSwitch.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnSerSwitch.Font = new System.Drawing.Font("Calibri", 10.8F);
-            this.btnSerSwitch.Location = new System.Drawing.Point(120, 53);
-            this.btnSerSwitch.Name = "btnSerSwitch";
-            this.btnSerSwitch.Size = new System.Drawing.Size(134, 44);
-            this.btnSerSwitch.TabIndex = 2;
-            this.btnSerSwitch.Text = "开启服务器";
-            this.btnSerSwitch.UseVisualStyleBackColor = true;
-            this.btnSerSwitch.Click += new System.EventHandler(this.btnSerSwitch_Click);
-            // 
-            // lblPort
-            // 
-            this.lblPort.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lblPort.AutoSize = true;
-            this.lblPort.Font = new System.Drawing.Font("Calibri", 10.8F);
-            this.lblPort.Location = new System.Drawing.Point(13, 13);
-            this.lblPort.Name = "lblPort";
-            this.lblPort.Size = new System.Drawing.Size(90, 23);
-            this.lblPort.TabIndex = 0;
-            this.lblPort.Text = "本地端口";
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(965, 24);
-            this.menuStrip1.TabIndex = 3;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // tmr
-            // 
-            this.tmr.Enabled = true;
-            this.tmr.Interval = 500;
-            this.tmr.Tick += new System.EventHandler(this.tmr_Tick);
+            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Controls.Add(this.dataGridView1, 0, 0);
+            this.tableLayoutPanel2.Controls.Add(this.dataGridView3, 0, 1);
+            this.tableLayoutPanel2.Controls.Add(this.dataGridView2, 0, 2);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 61);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 3;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(1109, 480);
+            this.tableLayoutPanel2.TabIndex = 6;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(965, 449);
-            this.Controls.Add(this.tlpAll);
-            this.Controls.Add(this.menuStrip1);
+            this.ClientSize = new System.Drawing.Size(1109, 541);
+            this.Controls.Add(this.tableLayoutPanel2);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "Form1";
             this.Text = "Form1";
-            this.tlpAll.ResumeLayout(false);
+            this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView3)).EndInit();
             this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tlpAll;
-        private System.Windows.Forms.RichTextBox rtxHistory;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.DataGridView dataGridView3;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.TextBox txtPort;
-        private System.Windows.Forms.Label lblSwiSta;
-        private System.Windows.Forms.Button btnSerSwitch;
-        private System.Windows.Forms.Label lblPort;
-        private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.Timer tmr;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
     }
 }
-

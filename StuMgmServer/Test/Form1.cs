@@ -1,5 +1,11 @@
 ﻿using System;
-using System.Threading;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Net;
+using System.Net.Sockets;
+using System.Text;
 using System.Windows.Forms;
 using StuMgmLib.MyNameSpace;
 
@@ -7,84 +13,54 @@ namespace Test
 {
     public partial class Form1 : Form
     {
-        TcpConn tcpConn = new TcpConn();
-        Thread tUpdateUi = null;
-        private delegate void SetTextCallback(string text);
-
+        IPEndPoint IPP = null;
+        Socket socket = null;
         public Form1()
         {
             InitializeComponent();
         }
-        private void Server_FormClosed(object sender, FormClosedEventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
-            System.Environment.Exit(0);
-        }
-        /// <summary>
-        ///  委托：更新界面方法
-        /// </summary>
-        private void setText(string text)
-        {
-            if (rtxHistory.InvokeRequired)
-            {
-                SetTextCallback method = new SetTextCallback(setText);
-                Invoke(method, new object[] { text });
-            }
-            else
-            {
-                rtxHistory.Text = text + rtxHistory.Text;
-            }
+
         }
 
-        /// <summary>
-        ///  btn开关点击事件：开启、关闭服务器
-        /// </summary>
-        private void btnSerSwitch_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
-            bool sFlag = tcpConn.SocketExist;
+            Info.ClientSend cs = new Info.ClientSend();
+            cs.account = 01941;
+            cs.password = "980505";
+            cs.sqlStr = null;
+            byte[] send = BinaryED.Serialize<Info.ClientSend>(cs);
+            socket.Send(send);
+            byte[] recv = new byte[65535];
+            socket.Receive(recv);
+            Info.ServerSend ss = BinaryED.Deserialize<Info.ServerSend>(recv);
+            short per = ss.permission;
+            DataSet ds = ss.ds;
+            DataTable dt1 = ds.Tables["course_info"];
+            DataTable dt2 = ds.Tables["user_info"];
+            DataTable dt3 = ds.Tables["user"];
+
+            dataGridView1.DataSource = dt1;
+            dataGridView2.DataSource = dt2;
+            dataGridView3.DataSource = dt3;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
             try
             {
-                if (sFlag == true)
-                    tcpConn.CloseServer();
-                else if (sFlag != true)
-                {
-                    int port = Convert.ToInt16(txtPort.Text);
-                    tcpConn.OpenServer(port);
-                    tUpdateUi = new Thread(updateHistory);
-                    tUpdateUi.Start();
-                }
+                string ip = "127.0.0.1";
+                int port = 502;
+                IPP = new IPEndPoint(IPAddress.Parse(ip), port);
+                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket.Connect(IPP);
             }
-            catch (Exception ep)
+            catch (Exception econnect)
             {
-                MessageBox.Show(ep.Message);
+                MessageBox.Show(econnect.Message);
             }
         }
-
-        /// <summary>
-        ///  线程：接收客户端连接，接收数据，数据处理；更新历史界面
-        /// </summary>
-        private void updateHistory()
-        {
-            while (tcpConn.SocketExist)
-            {
-                setText(tcpConn.acceptConnection());
-                setText(tcpConn.acpMsg());
-            }
-        }
-
-        /// <summary>
-        ///  定时器更新btn开关服务器
-        /// </summary>
-        private void tmr_Tick(object sender, EventArgs e)
-        {
-            if (tcpConn.SocketExist)
-                btnSerSwitch.Text = "关闭服务器";
-            else
-                btnSerSwitch.Text = "开启服务器";
-        }
-
-
-
-
 
     }
 }

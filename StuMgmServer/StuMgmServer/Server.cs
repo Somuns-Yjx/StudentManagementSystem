@@ -17,7 +17,11 @@ namespace StuMgmServer
         }
         private void Server_FormClosed(object sender, FormClosedEventArgs e)
         {
-            System.Environment.Exit(0);
+            DialogResult dr = MessageBox.Show("确认退出程序？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dr == DialogResult.OK)
+            {
+                System.Environment.Exit(0);
+            }
         }
         /// <summary>
         ///  委托：更新界面方法
@@ -66,8 +70,8 @@ namespace StuMgmServer
         {
             while (tcpConn.SocketExist)
             {
-                setText(tcpConn.acceptConnection());
-                setText(tcpConn.acpMsg());
+                setText(tcpConn.AcceptConn());
+                setText(tcpConn.AcpMsg());
             }
         }
 
@@ -81,9 +85,6 @@ namespace StuMgmServer
             else
                 btnSerSwitch.Text = "开启服务器";
         }
-
-
-
 
 
     }
