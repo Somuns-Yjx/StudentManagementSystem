@@ -30,27 +30,35 @@ namespace Test
             cs.account = 01941;
             cs.password = "980505";
             cs.sqlStr = null;
-            byte[] send = BinaryED.Serialize<Info.ClientSend>(cs);
-            socket.Send(send);
-            byte[] recv = new byte[65535];
-            socket.Receive(recv);
-            Info.ServerSend ss = BinaryED.Deserialize<Info.ServerSend>(recv);
-            short per = ss.permission;
-            DataSet ds = ss.ds;
-            DataTable dt1 = ds.Tables["course_info"];
-            DataTable dt2 = ds.Tables["user_info"];
-            DataTable dt3 = ds.Tables["user"];
-
-            dataGridView1.DataSource = dt1;
-            dataGridView2.DataSource = dt2;
-            dataGridView3.DataSource = dt3;
+            //cs.sqlStr = new string[1];
+            //cs.sqlStr[0] = "UPDATE user_info set course_status = '李俊阳是个憨憨'  WHERE job_id=1941";
+            if (socket != null)
+            {
+                byte[] send = BinaryED.Serialize<Info.ClientSend>(cs);
+                socket.Send(send);
+                byte[] recv = new byte[65535];
+                socket.Receive(recv);
+                Info.ServerSend ss = BinaryED.Deserialize<Info.ServerSend>(recv);
+                //short per = ss.permission;
+                DataSet ds = ss.ds;
+                if (ds != null)
+                {
+                    DataTable dt1 = ds.Tables["course_info"];
+                    DataTable dt2 = ds.Tables["user_info"];
+                    DataTable dt3 = ds.Tables["user"];
+                    dataGridView1.DataSource = dt1;
+                    dataGridView2.DataSource = dt2;
+                    dataGridView3.DataSource = dt3;
+                }
+            }
+            socket = null;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             try
             {
-                string ip = "127.0.0.1";
+                string ip = "10.10.0.44";
                 int port = 502;
                 IPP = new IPEndPoint(IPAddress.Parse(ip), port);
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

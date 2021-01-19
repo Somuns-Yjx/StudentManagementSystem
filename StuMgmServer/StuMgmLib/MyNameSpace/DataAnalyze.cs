@@ -27,8 +27,9 @@ namespace StuMgmLib.MyNameSpace
          *                  Account    Permission  (SqlOperate)
          *                  
          * Send:     ____________________________________________________________________
-         *                |  Permission    |    DataSet                                                                                                                                                        |
-         *                |___short________DS_______________________________________________________________|
+         *                |  Permission    |    DataSet                                                                                                                          |
+         *                |___short________DS___________________________________________________|
+         * 
         */
 
         /// <summary>
@@ -42,11 +43,6 @@ namespace StuMgmLib.MyNameSpace
             {
                 ss.ds = null;
                 return ss;
-            }
-            bool sqlRes = false;
-            if (cs.sqlStr != null)  // sql语句为空，则表示仅登录验证，应
-            {
-                sqlRes = mySqlModify(cs.sqlStr);
             }
 
             string[] tbName;
@@ -66,10 +62,17 @@ namespace StuMgmLib.MyNameSpace
                     tbName = null;
                     break;
             }
+
+            ss.sqlSucceed = false;
+            if (cs.sqlStr != null)  // sql语句为空，则表示仅登录验证；若不为空，则取数据库操作返回值，并返回SS；
+            {
+                ss.sqlSucceed = mySqlModify(tbName, cs.sqlStr);
+                return ss;
+            }
+
             ss.ds = getDataSet(tbName, stuFlag, cs.account);
             return ss;
         }
-
 
         /// <summary>
         ///  登录验证，若失败，则返回错误码；若身份验证成功，则返回用户权限；
@@ -93,9 +96,8 @@ namespace StuMgmLib.MyNameSpace
                 else
                     return notFound;
             }
-            catch (MySqlException mySqlEx)
+            catch (MySqlException)
             {
-                MessageBox.Show(mySqlEx.Message);
                 return error;
             }
             finally
@@ -107,7 +109,7 @@ namespace StuMgmLib.MyNameSpace
         /// <summary>
         ///  改
         /// </summary>
-        private static bool mySqlModify(string[] sqlStr)
+        private static bool mySqlModify(string[] tbName, string[] sqlStr) // Need to change ......
         {
             MySqlConnection con = new MySqlConnection(conStr);
             try
@@ -116,8 +118,8 @@ namespace StuMgmLib.MyNameSpace
                 int len = sqlStr.Length;
                 for (int index = 0; index < len; index++)
                 {
-                    MySqlCommand mCmd = new MySqlCommand(sqlStr[index], con); // Need to change ......
-                    // To do sth here ......
+                    MySqlCommand mCmd = new MySqlCommand(sqlStr[index], con);  // 优化：所操作数据表是否匹配权限
+                    mCmd.ExecuteNonQuery();
                 }
                 return true;
             }

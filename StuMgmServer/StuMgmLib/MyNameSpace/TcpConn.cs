@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
+﻿/* Describtion : Class for Tcp Network Connection
+ * Company : Wuxi Xinje
+ * Author : Somuns
+ * DateTime : 2021/1/18 
+ */
+using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Windows.Forms;
 
 namespace StuMgmLib.MyNameSpace
 {
-    // 还有一种验证连接方式 Token
+    // 还有一种验证连接方式: Token
     public class TcpConn
     {
         private IPEndPoint IPP = null;
@@ -23,10 +27,23 @@ namespace StuMgmLib.MyNameSpace
             private set { my_SocketExist = value; }
         }
 
-        #region  开启服务器
-        public void OpenServer(int port)
+        public void GetIPAddress(ComboBox cb)
         {
-            IPP = new IPEndPoint(IPAddress.Parse("10.10.0.44"), port);
+            cb.Items.Clear();
+            foreach (IPAddress ipAddr in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
+            {
+                if (ipAddr.AddressFamily.ToString() == "InterNetwork")
+                {
+                    cb.Items.Add(ipAddr.ToString());
+                }
+            }
+            cb.Items.Add("127.0.0.1");
+        }
+
+        #region  开启服务器
+        public void OpenServer(string ipAddr, int port)
+        {
+            IPP = new IPEndPoint(IPAddress.Parse(ipAddr), port);
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             socket.Bind(IPP);
             socket.Listen(0);
@@ -100,11 +117,6 @@ namespace StuMgmLib.MyNameSpace
             }
         }
         #endregion
-
-
-
-
-
 
     }
 }

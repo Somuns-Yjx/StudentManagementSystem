@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Windows.Forms;
 using StuMgmLib.MyNameSpace;
+using System.ComponentModel;
 
 namespace StuMgmServer
 {
@@ -15,13 +16,9 @@ namespace StuMgmServer
         {
             InitializeComponent();
         }
-        private void Server_FormClosed(object sender, FormClosedEventArgs e)
+        private void 刷新IPToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DialogResult dr = MessageBox.Show("确认退出程序？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (dr == DialogResult.OK)
-            {
-                System.Environment.Exit(0);
-            }
+            tcpConn.GetIPAddress(cbxIPAddr);
         }
         /// <summary>
         ///  委托：更新界面方法
@@ -52,7 +49,7 @@ namespace StuMgmServer
                 else if (sFlag != true)
                 {
                     int port = Convert.ToInt16(txtPort.Text);
-                    tcpConn.OpenServer(port);
+                    tcpConn.OpenServer(cbxIPAddr.Text, port);
                     tUpdateUi = new Thread(updateHistory);
                     tUpdateUi.Start();
                 }
@@ -85,6 +82,27 @@ namespace StuMgmServer
             else
                 btnSerSwitch.Text = "开启服务器";
         }
+
+        private void Server_Load(object sender, EventArgs e)
+        {
+            tcpConn.GetIPAddress(cbxIPAddr);
+        }
+
+        private void Server_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //DialogResult dr = MessageBox.Show("确认退出程序？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            //if (dr != DialogResult.Yes)
+            //e.Cancel = true;
+            //tmr.Dispose();
+            //if (tUpdateUi != null)
+            //    tUpdateUi.Abort();
+            //if (MessageBox.Show("确认退出程序？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
+            System.Environment.Exit(0);
+
+        }
+
+
+
 
 
     }

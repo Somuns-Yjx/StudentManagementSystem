@@ -11,17 +11,19 @@ namespace StuMgmLib.MyNameSpace
         {
             public short account { get; set; }
             public string password { get; set; }
-            public string [] sqlStr { get; set; }
+            public string[] sqlStr { get; set; }
         }
         [Serializable]
         public class ServerSend
         {
             public short permission { get; set; }
             public DataSet ds { get; set; }
+            public bool sqlSucceed { get; set; }
         }
     }
 
-
+    #region Unused
+    
     #region 题目信息
     [Serializable]
     public class CourseInfo
@@ -129,4 +131,8 @@ namespace StuMgmLib.MyNameSpace
         //}
     }
     #endregion
+
+    #endregion
+
 }
+
