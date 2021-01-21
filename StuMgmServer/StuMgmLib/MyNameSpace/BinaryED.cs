@@ -1,4 +1,9 @@
-﻿using System.IO;
+﻿/* Describtion : Class for Binary Serialize and Deserialize
+ * Company : Wuxi Xinje
+ * Author : Somuns
+ * DateTime : 2021/1/18 
+ */
+using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace StuMgmLib.MyNameSpace

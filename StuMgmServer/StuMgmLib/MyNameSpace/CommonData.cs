@@ -1,4 +1,9 @@
-﻿using System;
+﻿/* Describtion : Class for Data Send From Client / Server
+ * Company : Wuxi Xinje
+ * Author : Somuns
+ * DateTime : 2021/1/18 
+ */
+using System;
 using System.Collections.Generic;
 using System.Data;
 
@@ -9,16 +14,16 @@ namespace StuMgmLib.MyNameSpace
         [Serializable]
         public class ClientSend
         {
-            public short account { get; set; }
-            public string password { get; set; }
-            public string[] sqlStr { get; set; }
+            public short Account { get; set; }
+            public string Password { get; set; }
+            public string[] SqlStr { get; set; }
         }
         [Serializable]
         public class ServerSend
         {
-            public short permission { get; set; }
-            public DataSet ds { get; set; }
-            public bool sqlSucceed { get; set; }
+            public short Permission { get; set; }
+            public DataSet Ds { get; set; }
+            public bool SqlSucceed { get; set; }
         }
     }
 

@@ -1,4 +1,9 @@
-﻿using MySql.Data.MySqlClient;
+﻿/* Describtion : Class for Data Analyze
+ * Company : Wuxi Xinje
+ * Author : Somuns
+ * DateTime : 2021/1/18 
+ */
+using MySql.Data.MySqlClient;
 using System.Data;
 using System.Windows.Forms;
 
@@ -12,8 +17,8 @@ namespace StuMgmLib.MyNameSpace
 
         private enum verifyCode : short
         {
-            error = -1,
-            notFound = -2,
+            notFound = -1,
+            error = -2,
             admin = 1,
             teacher = 2,
             student = 3,
@@ -38,16 +43,16 @@ namespace StuMgmLib.MyNameSpace
         public static Info.ServerSend ClientSendAnalyze(Info.ClientSend cs)
         {
             Info.ServerSend ss = new Info.ServerSend();
-            ss.permission = loginVerify(cs.account, cs.password);   // 验证身份
-            if (ss.permission < 0) // 小于0，则权限有误
+            ss.Permission = loginVerify(cs.Account, cs.Password);   // 验证身份
+            if (ss.Permission < 0) // 小于0，则权限有误
             {
-                ss.ds = null;
+                ss.Ds = null;
                 return ss;
             }
 
             string[] tbName;
             bool stuFlag = false;
-            switch (ss.permission)
+            switch (ss.Permission)
             {
                 case (short)verifyCode.admin:
                     tbName = new string[] { "user_info", "course_info", "user" };
@@ -63,14 +68,14 @@ namespace StuMgmLib.MyNameSpace
                     break;
             }
 
-            ss.sqlSucceed = false;
-            if (cs.sqlStr != null)  // sql语句为空，则表示仅登录验证；若不为空，则取数据库操作返回值，并返回SS；
+            ss.SqlSucceed = false;
+            if (cs.SqlStr != null)  // sql语句为空，则表示仅登录验证；若不为空，则取数据库操作返回值，并返回SS；
             {
-                ss.sqlSucceed = mySqlModify(tbName, cs.sqlStr);
+                ss.SqlSucceed = mySqlModify(tbName, cs.SqlStr);
                 return ss;
             }
 
-            ss.ds = getDataSet(tbName, stuFlag, cs.account);
+            ss.Ds = getDataSet(tbName, stuFlag, cs.Account);
             return ss;
         }
 
@@ -149,7 +154,7 @@ namespace StuMgmLib.MyNameSpace
                     string newStr = str + " " + tbName[index];
                     if ((stuFlag == true) && (tbName[index] == "user_info"))
                     {
-                        newStr += "where job_id = " + account.ToString();
+                        newStr += " where job_id = " + account.ToString();  // 学员权限时，返回该学员数据项
                     }
                     MySqlCommand mCmd = new MySqlCommand(newStr, con);
                     MySqlDataReader mReader = mCmd.ExecuteReader();

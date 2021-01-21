@@ -37,7 +37,8 @@ namespace StuMgmLib.MyNameSpace
                     cb.Items.Add(ipAddr.ToString());
                 }
             }
-            cb.Items.Add("127.0.0.1");
+            if (cb.FindString("127.0.0.1") == -1)
+                cb.Items.Add("127.0.0.1");
         }
 
         #region  开启服务器
@@ -71,7 +72,7 @@ namespace StuMgmLib.MyNameSpace
             try
             {
                 socketClient = socket.Accept();         // 阻塞等待客户端连接
-                return socketClient.RemoteEndPoint.ToString() + "  已连接 \n";
+                return DateTime.Now.ToLongTimeString() + " : " + socketClient.RemoteEndPoint.ToString() + "  已连接 \n";
             }
             catch (Exception)
             {
@@ -101,12 +102,12 @@ namespace StuMgmLib.MyNameSpace
                 byte[] dataSend = BinaryED.Serialize<Info.ServerSend>(ss);
                 socketClient.Send(dataSend);
 
-                return reEdPoint + "  断开连接 \n";
+                return DateTime.Now.ToLongTimeString() + " : " + reEdPoint + "  断开连接 \n";
             }
             catch                                // 客户端断开连接
             {
                 if (socketClient != null)
-                    return reEdPoint + "  断开连接 \n";
+                    return DateTime.Now.ToLongTimeString() + " : " + reEdPoint + "  断开连接 \n";
                 else
                     return null;
             }
