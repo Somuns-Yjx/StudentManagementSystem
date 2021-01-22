@@ -40,9 +40,9 @@ namespace StuMgmLib.MyNameSpace
         /// <summary>
         /// 解析ClientSend
         /// </summary>
-        public static Info.ServerSend ClientSendAnalyze(Info.ClientSend cs)
+        public static ServerSend ClientSendAnalyze(ClientSend cs)
         {
-            Info.ServerSend ss = new Info.ServerSend();
+            ServerSend ss = new ServerSend();
             ss.Permission = loginVerify(cs.Account, cs.Password);   // 验证身份
             if (ss.Permission < 0) // 小于0，则权限有误
             {

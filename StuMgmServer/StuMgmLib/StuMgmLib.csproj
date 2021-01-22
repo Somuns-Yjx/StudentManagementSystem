@@ -43,9 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyNameSpace\BinaryED.cs" />
-    <Compile Include="MyNameSpace\DataAnalyze.cs" />
     <Compile Include="MyNameSpace\CommonData.cs" />
+    <Compile Include="MyNameSpace\SystemCtrl.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MyNameSpace\TcpConn.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

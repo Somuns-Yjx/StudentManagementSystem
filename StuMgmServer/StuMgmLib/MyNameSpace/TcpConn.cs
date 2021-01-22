@@ -4,6 +4,7 @@
  * DateTime : 2021/1/18 
  */
 using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
 using System.Windows.Forms;
@@ -13,7 +14,8 @@ namespace StuMgmLib.MyNameSpace
     // 还有一种验证连接方式: Token
     public class TcpConn
     {
-        private IPEndPoint IPP = null;
+        public EndPoint Ep;
+        private IPEndPoint ipp = null;
         private Socket socket = null;
         private Socket socketClient = null;
 
@@ -44,9 +46,9 @@ namespace StuMgmLib.MyNameSpace
         #region  开启服务器
         public void OpenServer(string ipAddr, int port)
         {
-            IPP = new IPEndPoint(IPAddress.Parse(ipAddr), port);
+            ipp = new IPEndPoint(IPAddress.Parse(ipAddr), port);
             socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            socket.Bind(IPP);
+            socket.Bind(ipp);
             socket.Listen(0);
             SocketExist = true;
         }
@@ -67,49 +69,44 @@ namespace StuMgmLib.MyNameSpace
         /// <summary>
         /// 接收客户端连接
         /// </summary>
-        public string AcceptConn()
+        public void AcceptConn()
         {
             try
             {
                 socketClient = socket.Accept();         // 阻塞等待客户端连接
-                return DateTime.Now.ToLongTimeString() + " : " + socketClient.RemoteEndPoint.ToString() + "  已连接 \n";
+                Ep = socketClient.RemoteEndPoint;
             }
-            catch (Exception)
+            catch (SocketException se)
             {
-                return null;
+                Debug.Print(se.Message);
             }
         }
         #endregion
 
-        const int recvTimeOut = 3000;                                   // 设置接收超时时间
+        const int recvTimeOut = -1;                                   // 设置接收超时时间
         const int recvLength = 65535;
         #region 接收数据
         /// <summary>
         ///  接收数据
         /// </summary>
-        public string AcpMsg()
+        public void AcpMsg()
         {
-            byte[] dataRecv = new byte[recvLength];                    // 定义接收数组
-            string reEdPoint = "";
+            byte[] clientSend = new byte[recvLength];                    // 定义接收数组
             try
             {
-                reEdPoint = socketClient.RemoteEndPoint.ToString();
+
                 socketClient.ReceiveTimeout = recvTimeOut;
-                socketClient.Receive(dataRecv);
+                socketClient.Receive(clientSend);
 
-                var cs = BinaryED.Deserialize<Info.ClientSend>(dataRecv);
-                Info.ServerSend ss = DataAnalyze.ClientSendAnalyze(cs);
-                byte[] dataSend = BinaryED.Serialize<Info.ServerSend>(ss);
-                socketClient.Send(dataSend);
+                byte[] serverSend = SystemCtrl.GetServerResponse(clientSend);
 
-                return DateTime.Now.ToLongTimeString() + " : " + reEdPoint + "  断开连接 \n";
+                if (serverSend != null)
+                    socketClient.Send(serverSend);
+
             }
-            catch                                // 客户端断开连接
+            catch (SocketException se)                                // 客户端断开连接
             {
-                if (socketClient != null)
-                    return DateTime.Now.ToLongTimeString() + " : " + reEdPoint + "  断开连接 \n";
-                else
-                    return null;
+                Debug.Print(se.Message);
             }
             finally
             {

@@ -44,13 +44,17 @@ namespace StuMgmServer
             try
             {
                 if (sFlag == true)
+                {
                     tcpConn.CloseServer();
+                    btnSerSwitch.Text = "开启服务器";
+                }
                 else if (sFlag != true)
                 {
                     int port = Convert.ToInt16(txtPort.Text);
                     tcpConn.OpenServer(cbxIPAddr.Text, port);
                     tUpdateUi = new Thread(updateHistory);
                     tUpdateUi.Start();
+                    btnSerSwitch.Text = "关闭服务器";
                 }
             }
             catch (Exception ep)
@@ -66,21 +70,13 @@ namespace StuMgmServer
         {
             while (tcpConn.SocketExist)
             {
-                setText(tcpConn.AcceptConn());
-                setText(tcpConn.AcpMsg());
+                tcpConn.AcceptConn();
+                setText(DateTime.Now.ToLongTimeString() + " : " + tcpConn.Ep.ToString() + "  建立连接 \n");
+                tcpConn.AcpMsg();
+                setText(DateTime.Now.ToLongTimeString() + " : " + tcpConn.Ep.ToString() + "  断开连接 \n");
             }
         }
 
-        /// <summary>
-        ///  定时器更新btn开关服务器
-        /// </summary>
-        private void tmr_Tick(object sender, EventArgs e)
-        {
-            if (tcpConn.SocketExist)
-                btnSerSwitch.Text = "关闭服务器";
-            else
-                btnSerSwitch.Text = "开启服务器";
-        }
 
         private void Server_Load(object sender, EventArgs e)
         {
@@ -91,11 +87,6 @@ namespace StuMgmServer
         {
             //DialogResult dr = MessageBox.Show("确认退出程序？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             //if (dr != DialogResult.Yes)
-            //e.Cancel = true;
-            //tmr.Dispose();
-            //if (tUpdateUi != null)
-            //    tUpdateUi.Abort();
-            //if (MessageBox.Show("确认退出程序？", "提示", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)
             System.Environment.Exit(0);
 
         }
