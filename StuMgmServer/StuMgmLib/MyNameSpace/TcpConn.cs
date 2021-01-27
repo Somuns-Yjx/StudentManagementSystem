@@ -98,7 +98,7 @@ namespace StuMgmLib.MyNameSpace
                 socketClient.ReceiveTimeout = recvTimeOut;
                 socketClient.Receive(clientSend);
 
-                byte[] serverSend = SystemCtrl.GetServerResponse(clientSend);
+                byte[] serverSend = SystemCtrl.CreateServerResponse(clientSend);
 
                 if (serverSend != null)
                     socketClient.Send(serverSend);

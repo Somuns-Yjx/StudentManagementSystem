@@ -93,10 +93,10 @@ namespace StuMgmLib.MyNameSpace
         public int Token;
         //public string CourseStatus;
         public object Object;
-        public ServerResponse(object obj)
-        {
-            Object = obj;
-        }
+        //public ServerResponse(object obj)
+        //{
+        //    Object = obj;
+        //}
     }
     #endregion
 

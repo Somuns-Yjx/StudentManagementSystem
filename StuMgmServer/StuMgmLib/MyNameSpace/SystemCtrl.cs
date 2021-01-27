@@ -39,13 +39,13 @@ namespace StuMgmLib.MyNameSpace
         /// <summary>
         ///  获取返回数据
         /// </summary>
-        public static byte[] GetServerResponse(byte[] clientRequset)
+        public static byte[] CreateServerResponse(byte[] clientRequset)
         {
             try
             {
                 var cs = Deserialize<ClientRequest>(clientRequset);
 
-                ServerResponse sr = new ServerResponse(null);
+                ServerResponse sr = new ServerResponse();
 
                 switch (cs.Func)
                 {
@@ -184,7 +184,8 @@ namespace StuMgmLib.MyNameSpace
                 con.Close();
             }
         }
-
+        const int statusColumn = 3;
+        const int detailsColumn = 4;
         static bool getUserCourseStatus(short jobId, out string status, out string details)
         {
             status = "";
@@ -197,8 +198,8 @@ namespace StuMgmLib.MyNameSpace
                 MySqlCommand mCmd = new MySqlCommand(qStu, con);
                 MySqlDataReader mReader = mCmd.ExecuteReader();
                 mReader.Read();
-                status = (mReader.IsDBNull(nameColumn)) ? " " : mReader.GetString("status");
-                details = (mReader.IsDBNull(nameColumn)) ? " " : mReader.GetString("details");
+                status = (mReader.IsDBNull(statusColumn)) ? " " : mReader.GetString("status");
+                details = (mReader.IsDBNull(detailsColumn)) ? " " : mReader.GetString("details");
                 return true;
             }
             catch (MySqlException)
