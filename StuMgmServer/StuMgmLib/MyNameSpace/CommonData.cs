@@ -22,8 +22,10 @@ namespace StuMgmLib.MyNameSpace
         VerifyLogin = 1,
         GetCourseInfo = 2,
         GetUserCourseInfo = 3,
+        SUpdateCourse = 4,
+        TUpdateCourse = 5,
     }
-    public enum LvErr
+    public enum Lvl
     {
         NotFound = -1,
         Error = -2,
@@ -44,17 +46,61 @@ namespace StuMgmLib.MyNameSpace
     }
 
     [Serializable]
-    public class UserInfo
+    public class UserInfoLogin
     {
-        public short Account;       
+        public short Account;
         public string Password;
-        public Int16 Token;           
-        public LvErr UserLev;
-        public UserInfo(short account, string password) // Changed
+        public UserInfoLogin(short account, string password) // Changed
         {
             Account = account;
             Password = password;
         }
+    }
+
+    [Serializable]
+    public class UserCourseInfoReq
+    {
+        public short Job_Id;
+        public int Token;
+    }
+
+    [Serializable]
+    public class UserCourseInfoOper // T represents teacher, S ->student
+    {
+        public short Job_Id;
+        public int Token;
+        public string sqlStr;
+    }
+
+
+    [Serializable]
+    public enum CourseStatusEnum
+    {
+        //lll,
+        //...//
+    }
+
+
+    #endregion
+
+    #region ServerClass
+    [Serializable]
+    public class ServerResponse
+    {
+        public object Object;
+        public ServerResponse(object obj)
+        {
+            Object = obj;
+        }
+
+    }
+
+    [Serializable]
+    public class LoginResponse
+    {
+        public int Token;
+        public Lvl Level;
+        public bool Final;
     }
 
     [Serializable]
@@ -68,13 +114,6 @@ namespace StuMgmLib.MyNameSpace
     }
 
     [Serializable]
-    public enum CourseStatusEnum
-    {
-        //lll,
-        //...//
-    }
-
-    [Serializable]
     public class UserCourseInfo
     {
         public short JobId;//工号
@@ -83,23 +122,14 @@ namespace StuMgmLib.MyNameSpace
         //        ..public DateTime Entry;
         public string Details;//信息描述
     }
-    #endregion
 
-    #region ServerClass
     [Serializable]
-    public class ServerResponse
+    public class UpdateRp // 数据库操作反馈信息
     {
-        public LvErr Lev;
-        public int Token;
-        //public string CourseStatus;
-        public object Object;
-        //public ServerResponse(object obj)
-        //{
-        //    Object = obj;
-        //}
-    }
+        public bool Final;
+        public string ErrMessge;
     #endregion
-
+    }
 
 
 }
