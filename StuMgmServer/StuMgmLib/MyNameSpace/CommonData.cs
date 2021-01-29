@@ -5,15 +5,28 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Data;
 
 namespace StuMgmLib.MyNameSpace
 {
-    public class Info
+    #region QuickTable
+
+    internal class QTInfo
+    {
+        public int Token;
+        public Lvl Level;
+        public QTInfo(int token, Lvl lv)
+        {
+            Token = token;
+            Level = lv;
+        }
+    }
+    public class QT // quickTable
     {
         internal const Int16 tokenMaxCount = 32767;
-        internal static Dictionary<short, int> myToken = new Dictionary<short, int>();
+        internal static Dictionary<short, QTInfo> quickTable = new Dictionary<short, QTInfo>();
     }
+
+    #endregion
 
     #region ClientClass
 
@@ -21,9 +34,11 @@ namespace StuMgmLib.MyNameSpace
     {
         VerifyLogin = 1,
         GetCourseInfo = 2,
-        GetUserCourseInfo = 3,
+        GetSelfUserCourseInfo = 3,
+        GetSomeoneUserCInfo = 6,
         SUpdateCourse = 4,
         TUpdateCourse = 5,
+
     }
     public enum Lvl
     {
@@ -65,19 +80,11 @@ namespace StuMgmLib.MyNameSpace
     }
 
     [Serializable]
-    public class UserCourseInfoOper // T represents teacher, S ->student
+    public class UserCourseInfoOper 
     {
         public short Job_Id;
         public int Token;
-        public string sqlStr;
-    }
-
-
-    [Serializable]
-    public enum CourseStatusEnum
-    {
-        //lll,
-        //...//
+        public string Status;
     }
 
 
@@ -87,6 +94,8 @@ namespace StuMgmLib.MyNameSpace
     [Serializable]
     public class ServerResponse
     {
+        public bool Final;
+        public string ErrMessage;
         public object Object;
         public ServerResponse(object obj)
         {
@@ -100,7 +109,6 @@ namespace StuMgmLib.MyNameSpace
     {
         public int Token;
         public Lvl Level;
-        public bool Final;
     }
 
     [Serializable]
@@ -123,14 +131,8 @@ namespace StuMgmLib.MyNameSpace
         public string Details;//信息描述
     }
 
-    [Serializable]
-    public class UpdateRp // 数据库操作反馈信息
-    {
-        public bool Final;
-        public string ErrMessge;
-    #endregion
-    }
 
+    #endregion
 
 }
 

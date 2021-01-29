@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Windows.Forms;
 using StuMgmLib.MyNameSpace;
+using System.Diagnostics;
 
 namespace StuMgmServer
 {
@@ -19,9 +20,8 @@ namespace StuMgmServer
         {
             tcpConn.GetIPAddress(cbxIPAddr);
         }
-        /// <summary>
-        ///  委托：更新界面方法
-        /// </summary>
+
+        //  委托：更新界面
         private void setText(string text)
         {
             if (rtxHistory.InvokeRequired)
@@ -35,9 +35,7 @@ namespace StuMgmServer
             }
         }
 
-        /// <summary>
-        ///  btn开关点击事件：开启、关闭服务器
-        /// </summary>
+        //  开启、关闭服务器
         private void btnSerSwitch_Click(object sender, EventArgs e)
         {
             bool sFlag = tcpConn.SocketExist;
@@ -63,20 +61,27 @@ namespace StuMgmServer
             }
         }
 
-        /// <summary>
-        ///  线程：接收客户端连接，接收数据，数据处理；更新历史界面
-        /// </summary>
+        //  线程：接收客户端连接，接收数据，数据处理；更新历史界面
         private void updateHistory()
         {
             while (tcpConn.SocketExist)
             {
-                tcpConn.AcceptConn();
-                setText(DateTime.Now.ToLongTimeString() + " : " + tcpConn.Ep.ToString() + "  建立连接 \n");
-                tcpConn.AcpMsg();
-                setText(DateTime.Now.ToLongTimeString() + " : " + tcpConn.Ep.ToString() + "  断开连接 \n");
+                try
+                {
+                    tcpConn.AcceptConn();
+                    setText(DateTime.Now.ToLongTimeString() + " : " + tcpConn.Ep.ToString() + "  建立连接 \n");
+                    byte[] serverSend = SystemCtrl.CreateServerResponse(tcpConn.AcceptMsg());
+                    if (serverSend != null)
+                        tcpConn.socketClient.Send(serverSend);
+                    tcpConn.socketClient.Close();
+                    setText(DateTime.Now.ToLongTimeString() + " : " + tcpConn.Ep.ToString() + "  断开连接 \n");
+                }
+                catch (Exception e)
+                {
+                    Debug.Print(DateTime.Now + " : " + e.Message);
+                }
             }
         }
-
 
         private void Server_Load(object sender, EventArgs e)
         {
@@ -85,15 +90,15 @@ namespace StuMgmServer
 
         private void Server_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //DialogResult dr = MessageBox.Show("确认退出程序？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            //if (dr != DialogResult.Yes)
-            System.Environment.Exit(0);
-
+            DialogResult dr = MessageBox.Show("确认退出程序？", "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dr != DialogResult.Yes)
+                e.Cancel = true;
+            else
+            {
+                if (tUpdateUi != null)
+                    tUpdateUi.Abort();
+            }
         }
-
-
-
-
 
     }
 }

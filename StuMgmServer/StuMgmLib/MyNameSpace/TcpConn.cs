@@ -11,13 +11,13 @@ using System.Windows.Forms;
 
 namespace StuMgmLib.MyNameSpace
 {
-    // 还有一种验证连接方式: Token
     public class TcpConn
     {
         public EndPoint Ep;
-        private IPEndPoint ipp = null;
-        private Socket socket = null;
-        private Socket socketClient = null;
+        public Socket socketClient;
+
+        private IPEndPoint ipp;
+        private Socket socket;
 
         private bool my_SocketExist = false;
         /// <summary>
@@ -43,7 +43,9 @@ namespace StuMgmLib.MyNameSpace
                 cb.Items.Add("127.0.0.1");
         }
 
-        #region  开启服务器
+        /// <summary>
+        ///  开服务器
+        /// </summary>
         public void OpenServer(string ipAddr, int port)
         {
             ipp = new IPEndPoint(IPAddress.Parse(ipAddr), port);
@@ -52,20 +54,19 @@ namespace StuMgmLib.MyNameSpace
             socket.Listen(0);
             SocketExist = true;
         }
-        #endregion
 
-        #region 关闭服务器
+        /// <summary>
+        /// 关服务器
+        /// </summary>
         public void CloseServer()
         {
+            SocketExist = false;
             if (socketClient != null)
                 socketClient.Close();
             if (socket != null)
                 socket.Close();
-            SocketExist = false;
         }
-        #endregion
 
-        #region 接收客户端连接
         /// <summary>
         /// 接收客户端连接
         /// </summary>
@@ -78,43 +79,37 @@ namespace StuMgmLib.MyNameSpace
             }
             catch (SocketException se)
             {
-                Debug.Print(se.Message);
+                Debug.Print(DateTime.Now + " : " + se.Message);
             }
         }
-        #endregion
 
-        const int recvTimeOut = -1;                                   // 设置接收超时时间
+        private int recvTimeOut = 2000;
+        public int RecvTimeOut // 设置接收超时时间 
+        {
+            get { return recvTimeOut; }
+            set { recvTimeOut = value; }
+        }
         const int recvLength = 65535;
-        #region 接收数据
         /// <summary>
         ///  接收数据
         /// </summary>
-        public void AcpMsg()
+        public byte[] AcceptMsg()
         {
-            byte[] clientSend = new byte[recvLength];                    // 定义接收数组
+            byte[] clientSend = new byte[recvLength];
             try
             {
-
-                socketClient.ReceiveTimeout = recvTimeOut;
+                socketClient.ReceiveTimeout = RecvTimeOut;
                 socketClient.Receive(clientSend);
-
-                byte[] serverSend = SystemCtrl.CreateServerResponse(clientSend);
-
-                if (serverSend != null)
-                    socketClient.Send(serverSend);
-
+                return clientSend;
             }
-            catch (SocketException se)                                // 客户端断开连接
+            catch (Exception e)                                // 客户端断开连接
             {
-                Debug.Print(se.Message);
-            }
-            finally
-            {
+                Debug.Print(DateTime.Now + " : " + e.Message);
                 if (socketClient != null)
                     socketClient.Close();
+                return null;
             }
         }
-        #endregion
 
     }
 }

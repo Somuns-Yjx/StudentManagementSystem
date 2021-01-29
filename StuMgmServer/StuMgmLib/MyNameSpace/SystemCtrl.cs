@@ -1,17 +1,18 @@
-﻿using MySql.Data.MySqlClient;
+﻿/* Describtion : Class for Data Operation
+ * Company : Wuxi Xinje
+ * Author : Somuns
+ * DateTime : 2021/1/28
+ */
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 
 namespace StuMgmLib.MyNameSpace
 {
-    class SystemCtrl
+    public class SystemCtrl
     {
         #region 流
         /// <summary>
@@ -38,7 +39,6 @@ namespace StuMgmLib.MyNameSpace
         }
         #endregion
 
-
         /// <summary>
         ///  获取返回数据
         /// </summary>
@@ -48,83 +48,93 @@ namespace StuMgmLib.MyNameSpace
             {
                 var cr = Deserialize<ClientRequest>(clientRequset);
 
-                ServerResponse sr = null;
+                ServerResponse sr = new ServerResponse(null);
 
                 switch (cr.Func)
                 {
                     case ClientFunc.VerifyLogin:
-                        UserInfoLogin uil = (UserInfoLogin)cr.Object;
+                        #region 登陆验证
                         LoginResponse lr = new LoginResponse();
-
-                        if (getPermission(uil, out lr.Level))
-                            lr.Token = addToken(uil.Account, ref Info.myToken);
-
                         sr = new ServerResponse(lr);
-                        break;
+                        UserInfoLogin login = (UserInfoLogin)cr.Object;
 
+                        getPerFromDB(login, out sr.Final, out sr.ErrMessage, out lr.Level);
+                        if (sr.Final)
+                            lr.Token = addToken(login.Account, lr.Level, ref QT.quickTable);
+
+                        break;
+                        #endregion
                     case ClientFunc.GetCourseInfo:
-
-                        sr = new ServerResponse(getCourseInfo());
-                        Debug.Print(sr.Object.GetType().ToString());
+                        #region 获取课程表
+                        sr.Object = getCosInfo(out sr.Final, out sr.ErrMessage);
                         break;
-
-                    case ClientFunc.GetUserCourseInfo:  // 获取学员个人课程信息，详情
+                        #endregion
+                    case ClientFunc.GetSelfUserCourseInfo:
+                        #region 学员获取个人进度详情
 
                         UserCourseInfoReq ucir = (UserCourseInfoReq)cr.Object;
                         UserCourseInfo uc = new UserCourseInfo();
+                        sr = new ServerResponse(uc);
 
-                        if (!verifyToken(ucir.Job_Id, ucir.Token))
+                        vrTokenFrT(ucir.Job_Id, ucir.Token, out sr.Final, out sr.ErrMessage);
+                        if (!sr.Final)
                             break;
 
-                        if (getUserCourseStatus(ucir.Job_Id, out uc.Status, out uc.Details))
-                            sr = new ServerResponse(uc);
+                        getUsrCosStatus(ucir.Job_Id, out sr.Final, out sr.ErrMessage, out uc.Status, out uc.Details);
                         break;
 
-                    case ClientFunc.SUpdateCourse: // 学生修改课程信息，仅有权修改自己的个别类型状态
-                        /* Todo
-                         verify (jobid token)
-                        update */
+                        #endregion
+                    case ClientFunc.GetSomeoneUserCInfo:
+                        #region 教师获取某人进度详情
+
+                        UserCourseInfoOper uciO = (UserCourseInfoOper)cr.Object;
+
+                        vrTokenFrT(uciO.Job_Id, uciO.Token, out sr.Final, out sr.ErrMessage);
+                        if (!sr.Final)
+                            break;
+
+                        Lvl l = getPerFrT(uciO.Job_Id);
+                        vrPer(l, out sr.Final, out sr.ErrMessage);
+                        if (!sr.Final)
+                            break;
+
+                        sr.Object = getUsrCosStatus(uciO.Status, out sr.Final, out sr.ErrMessage);
+                        break;
+
+                        #endregion
+                    case ClientFunc.SUpdateCourse:
+                        #region 学生修改课程状态
+
                         UserCourseInfoOper suico = (UserCourseInfoOper)cr.Object;
-                        UpdateRp urs = new UpdateRp();
 
-                        if (!verifyToken(suico.Job_Id, suico.Token))
+                        vrTokenFrT(suico.Job_Id, suico.Token, out sr.Final, out sr.ErrMessage);
+                        if (!sr.Final)
                             break;
 
-                        sUpdateInfo(suico.Job_Id, suico.sqlStr, out  urs.Final, out urs.ErrMessge);
-
-                        sr = new ServerResponse(urs);
-
+                        sUpUsrCosInfo(suico.Job_Id, suico.Status, out  sr.Final, out sr.ErrMessage);
                         break;
+
+                        #endregion
                     case ClientFunc.TUpdateCourse:
-                        /*Todo
-                        教师修改课程信息，有权更改学生课程状态
-                        verify (jobid,token)
-                        verify(permission)
-                        update*/
+                        #region 教师修改课程详情
+
                         UserCourseInfoOper tucio = (UserCourseInfoOper)cr.Object;
-                        UpdateRp urt = new UpdateRp();
 
-                        if (!verifyToken(tucio.Job_Id, tucio.Token))
+                        vrTokenFrT(tucio.Job_Id, tucio.Token, out sr.Final, out sr.ErrMessage);
+                        if (!sr.Final)
                             break;
 
-                        Lvl l = Lvl.Error;
-                        if (!getPermission(tucio.Job_Id, out l))
+                        Lvl lv = getPerFrT(tucio.Job_Id);
+                        vrPer(lv, out sr.Final, out sr.ErrMessage);
+                        if (!sr.Final)
                             break;
 
-                        if (!(l == Lvl.Teacher || l == Lvl.Teacher))
-                        {
-                            urt.Final = false;
-                            urt.ErrMessge = "permission err";
-                            break;
-                        }
-
-                        tUpdateInfo(tucio.sqlStr, out urt.Final, out urt.ErrMessge);
-                        sr = new ServerResponse(urt);
+                        tUpUsrCosInfo(tucio.Status, out sr.Final, out sr.ErrMessage);
 
                         break;
+                        #endregion
                 }
-                if (null == sr)
-                    return null;
+
                 return Serialize<ServerResponse>(sr);
             }
             catch
@@ -135,24 +145,16 @@ namespace StuMgmLib.MyNameSpace
 
         const string conStr = "data source=localhost; initial catalog=xinje; user id=root; pwd=980505;charset = utf8";
 
-        #region Verify
+        #region Token、Permission
 
-        static bool getPermission(object o, out Lvl level)
+        static void getPerFromDB(UserInfoLogin o, out bool final, out string errMessage, out Lvl level)
         {
+            final = false;
             level = Lvl.Error;
+            errMessage = null;
 
             string qStu = "select * from user where account = ";
-
-            if (o is UserInfoLogin)
-            {
-                UserInfoLogin uil = (UserInfoLogin)o;
-                qStu += uil.Account + " and password = '" + uil.Password + "'";
-            } // 首次登陆验证
-            else if (o is UserCourseInfoOper)
-            {
-                UserCourseInfoOper ucio = (UserCourseInfoOper)o;
-                qStu += ucio.Job_Id + ucio.sqlStr;
-            } // 数据库操作验证权限
+            qStu += o.Account + " and password = '" + o.Password + "'";
 
             MySqlConnection con = new MySqlConnection(conStr);
             try
@@ -164,17 +166,19 @@ namespace StuMgmLib.MyNameSpace
                 {
                     mReader.Read();
                     level = (Lvl)mReader.GetInt16("level");
-                    return true;
+                    final = true;
                 }
                 else
                 {
                     level = Lvl.NotFound;
-                    return false;
+                    final = false;
                 }
             }
-            catch (MySqlException)
+            catch (MySqlException e)
             {
-                return false;
+                errMessage = e.Message;
+                final = false;
+                Debug.Print(DateTime.Now + " : " + e.Message);
             }
             finally
             {
@@ -182,11 +186,11 @@ namespace StuMgmLib.MyNameSpace
             }
         }
 
-        static int addToken(short job_id, ref Dictionary<short, int> myToken)
+        static int addToken(short job_id, Lvl level, ref Dictionary<short, QTInfo> myToken)
         {
             if (myToken != null)
             {
-                if (myToken.Count > Info.tokenMaxCount)  // 清除缓存
+                if (myToken.Count > QT.tokenMaxCount)  // 清除缓存
                     myToken.Clear();
                 if (myToken.ContainsKey(job_id))
                 {
@@ -195,24 +199,54 @@ namespace StuMgmLib.MyNameSpace
             }
             Random r = new Random();    // 伪随机
             int token = r.Next();
-            myToken.Add(job_id, token);
+
+            QTInfo u = new QTInfo(token, level);
+
+            myToken.Add(job_id, u);
             return token;
         }
 
-        static bool verifyToken(short job_id, int token)
+        static void vrTokenFrT(short job_id, int token, out bool final, out string errMessage)
         {
-            if (Info.myToken[job_id] == token)
-                return true;
-            return false;
+            final = false;
+            errMessage = null;
+            if (QT.quickTable[job_id].Token != token)
+            {
+                errMessage = "Token Err";
+                return;
+            }
+            final = true;
+        }
+
+        static Lvl getPerFrT(short job_id)
+        {
+            return QT.quickTable[job_id].Level;
+        }
+
+        static void vrPer(Lvl lv, out bool final, out string errMessage)
+        {
+            if (!(lv == Lvl.Teacher || lv == Lvl.Admin))
+            {
+                final = false;
+                errMessage = "Permission denied";
+            }
+            final = true;
+            errMessage = null;
         }
 
         #endregion
 
+        #region GetInfo
+
+        // Common
         #region CourseInfo
         const int nameColumn = 1;
         const int contentColumn = 3;
-        static List<CourseInfo> getCourseInfo()
+        static List<CourseInfo> getCosInfo(out bool final, out string errMessage)
         {
+            final = false;
+            errMessage = null;
+
             List<CourseInfo> listCI = new List<CourseInfo>();
             string str = "select * from course_info";
             MySqlConnection con = new MySqlConnection(conStr);
@@ -231,10 +265,12 @@ namespace StuMgmLib.MyNameSpace
                     ci.Content = (mReader.IsDBNull(contentColumn)) ? "无" : mReader.GetString("content");
                     listCI.Add(ci);
                 }
+                final = true;
                 return listCI;
             }
             catch (MySqlException mySqlEx)
             {
+                errMessage = mySqlEx.Message;
                 Debug.Print(DateTime.Now + " : " + mySqlEx.Message);
                 return null;
             }
@@ -248,12 +284,13 @@ namespace StuMgmLib.MyNameSpace
         #region UserCourseInfo
         const int statusColumn = 3;
         const int detailsColumn = 4;
-
         /// <summary>
-        /// 员工获取课程信息
+        /// 员工获取课程详情
         /// </summary>
-        static bool getUserCourseStatus(short jobId, out string status, out string details)
+        static void getUsrCosStatus(short jobId, out bool final, out string errMessage, out string status, out string details)
         {
+            final = false;
+            errMessage = null;
             status = "";
             details = "";
             string qStu = "select * from usercouse_info where job_id = " + jobId;
@@ -266,17 +303,59 @@ namespace StuMgmLib.MyNameSpace
                 mReader.Read();
                 status = (mReader.IsDBNull(statusColumn)) ? " " : mReader.GetString("status");
                 details = (mReader.IsDBNull(detailsColumn)) ? " " : mReader.GetString("details");
-                return true;
+                final = true;
             }
-            catch (MySqlException)
+            catch (MySqlException MySqlE)
             {
-                return false;
+                errMessage = MySqlE.Message;
+                Debug.Print(DateTime.Now + " : " + MySqlE.Message);
             }
             finally
             {
                 con.Close();
             }
         }
+        /// <summary>
+        ///  教师获取课程详情
+        /// </summary>
+        static List<UserCourseInfo> getUsrCosStatus(string sqlStr, out bool final, out string errMessage)
+        {
+            List<UserCourseInfo> list = new List<UserCourseInfo>();
+            final = false;
+            errMessage = null;
+
+            string qStu = "select * from usercouse_info where";
+            qStu += sqlStr;
+            MySqlConnection con = new MySqlConnection(conStr);
+            try
+            {
+                con.Open();
+                MySqlCommand mCmd = new MySqlCommand(qStu, con);
+                MySqlDataReader mReader = mCmd.ExecuteReader();
+                UserCourseInfo u = new UserCourseInfo();
+                while (mReader.Read())
+                {
+                    u.JobId = mReader.GetInt16("job_id");
+                    u.Name = mReader.GetString("name");
+                    u.Status = (mReader.IsDBNull(statusColumn)) ? " " : mReader.GetString("status");
+                    u.Details = (mReader.IsDBNull(detailsColumn)) ? " " : mReader.GetString("details");
+                    list.Add(u);
+                }
+                final = true;
+                return list;
+            }
+            catch (MySqlException MySqlE)
+            {
+                errMessage = MySqlE.Message;
+                Debug.Print(DateTime.Now + " : " + MySqlE.Message);
+                return null;
+            }
+            finally
+            {
+                con.Close();
+            }
+        }
+        #endregion
 
         #endregion
 
@@ -287,26 +366,27 @@ namespace StuMgmLib.MyNameSpace
         /// <summary>
         ///  学员更改个人课程状态
         /// </summary>
-        static void sUpdateInfo(short job_id, string sqlStr, out bool final, out string eMessage)
+        static void sUpUsrCosInfo(short job_id, string sqlStr, out bool final, out string eMessage)
         {
             final = false;
             eMessage = null;
-            string str = "select * from usercourse_info where account = " + job_id + sqlStr;
-            MySqlConnection conn = new MySqlConnection();
+            string str = "UPDATE usercouse_info " + " set status = '" + sqlStr + "' where job_id = " + job_id;
+            MySqlConnection con = new MySqlConnection(conStr);
             try
             {
-                MySqlCommand cmd = new MySqlCommand(str, conn);
+                con.Open();
+                MySqlCommand cmd = new MySqlCommand(str, con);
                 if (cmd.ExecuteNonQuery() > 0)
                     final = true;
             }
-            catch (MySqlException e)
+            catch (MySqlException MySqlE)
             {
-                eMessage = e.Message;
-                Debug.Print(e.Message);    // 可以去掉
+                eMessage = MySqlE.Message;
+                Debug.Print(DateTime.Now + " : " + MySqlE.Message);
             }
             finally
             {
-                conn.Close();
+                con.Close();
             }
         }
 
@@ -314,10 +394,11 @@ namespace StuMgmLib.MyNameSpace
 
         #region Teacher
 
-        static void tUpdateInfo(string sqlStr, out bool final, out string eMessage)
+        static void tUpUsrCosInfo(string sqlStr, out bool final, out string eMessage)
         {
             final = false;
             eMessage = null;
+
             string str = "select * from usercourse_info where " + sqlStr;
             MySqlConnection conn = new MySqlConnection();
             try
@@ -326,10 +407,10 @@ namespace StuMgmLib.MyNameSpace
                 if (cmd.ExecuteNonQuery() > 0)
                     final = true;
             }
-            catch (MySqlException e)
+            catch (MySqlException MySqlE)
             {
-                eMessage = e.Message;
-                Debug.Print(e.Message);    // 可以去掉
+                eMessage = MySqlE.Message;
+                Debug.Print(DateTime.Now + " : " + MySqlE.Message);
             }
             finally
             {
@@ -343,9 +424,5 @@ namespace StuMgmLib.MyNameSpace
 
         #endregion
 
-
-
     }
-
-
 }
